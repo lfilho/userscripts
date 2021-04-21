@@ -5,8 +5,8 @@
 // @author       Luiz Filho
 // @match        https://bcres.paragonrels.com/publink/*
 // @icon         https://www.google.com/s2/favicons?domain=paragonrels.com
-// @downloadURL  https://openuserjs.org/install/lfilho/Paragon_real_state_permalink.user.js
-// @updateURL    https://openuserjs.org/install/lfilho/Paragon_real_state_permalink.user.js
+// @downloadURL  https://github.com/lfilho/userscripts/raw/main/scripts/paragon_real_state_permalink.user.js
+// @updateURL    https://github.com/lfilho/userscripts/raw/main/scripts/paragon_real_state_permalink.user.js
 // @grant        none
 // @license      MIT
 // ==/UserScript==
