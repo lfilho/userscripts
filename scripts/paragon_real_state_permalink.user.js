@@ -1,32 +1,29 @@
 // ==UserScript==
 // @name         Paragon real state permalink
-// @version      0.2
+// @version      0.3
 // @description  Adds a permalink to paragon's listings so we can share with realtors, spouses, etc
 // @author       Luiz Filho
 // @match        https://bcres.paragonrels.com/publink/*
 // @icon         https://www.google.com/s2/favicons?domain=paragonrels.com
 // @downloadURL  https://github.com/lfilho/userscripts/raw/main/scripts/paragon_real_state_permalink.user.js
 // @updateURL    https://github.com/lfilho/userscripts/raw/main/scripts/paragon_real_state_permalink.user.js
+// @run-at       document-end
 // @grant        none
 // @license      MIT
 // ==/UserScript==
 
 (async () => {
-  await sleep(2000);
+  await sleep(200);
 
-  addPermalinks();
-
-  addGoogleMapsLinks();
+  if (window.self.name === 'left') {
+    addPermalinks();
+  } else if (window.self.name === 'fraDetail') {
+    addGoogleMapsLinks();
+  }
 
   function addGoogleMapsLinks() {
-    const addressDiv = window.frames.fraDetail.document.elementFromPoint(
-      150,
-      15
-    );
-    const postalCodeDiv = window.frames.fraDetail.document.elementFromPoint(
-      316,
-      56
-    );
+    const addressDiv = document.elementFromPoint(150, 15);
+    const postalCodeDiv = document.elementFromPoint(316, 56);
     const address = [addressDiv, postalCodeDiv]
       .map(el => el.innerText)
       .join(', ');
@@ -38,9 +35,7 @@
 
   function addPermalinks() {
     const rows = [
-      ...window.frames.left.document.querySelectorAll(
-        'tr.GridAltRow, tr.GridRow, tr.GridHiRow'
-      ),
+      ...document.querySelectorAll('tr.GridAltRow, tr.GridRow, tr.GridHiRow'),
     ];
     const guid = new URL(document.location).searchParams.get('GUID');
 
