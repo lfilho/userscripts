@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Paragon real state permalink
-// @version      0.4
+// @version      0.5
 // @description  Adds a permalink to paragon's listings so we can share with realtors, spouses, etc
 // @author       Luiz Filho
 // @match        https://bcres.paragonrels.com/publink/*
@@ -12,17 +12,59 @@
 // @license      MIT
 // ==/UserScript==
 
+/* global $*/
+
 (async () => {
   await sleep(200);
 
   const isMenu = window.self.name === 'left';
-  const isDetailPage =
-    window.self.name === 'fraDetail' || window.self === window.top;
+  const isDetailPage = window.self.name === 'fraDetail';
+  const isStandalonePage = window.self === window.top;
 
   if (isMenu) {
     addPermalinks();
-  } else if (isDetailPage) {
+  }
+  if (isDetailPage || isStandalonePage) {
     addGoogleMapsLinks();
+  }
+  if (isStandalonePage) {
+    fixSlideshow();
+  }
+
+  function fixSlideshow() {
+    const newSlideshowHandler = element => {
+      const $this = $(element.currentTarget);
+      let index = parseInt($this.attr('firstImage'), 10) - 1;
+      index = index < 0 ? 0 : index;
+
+      let title = 'Listing ';
+      const listingId = $this.attr('listingid');
+      const displayId = $this.data('displayId') || listingId;
+      if (displayId != null) {
+        title += '#' + displayId;
+      }
+      let height = $(window).height();
+      height = height > 625 ? 575 : height - 50;
+      const currentLocation = new URL(window.location);
+      const guid = currentLocation.searchParams.get('GUID');
+      const slideshowUrl = `/Publink/Search/SlideShow2.aspx?GUID=${guid}`;
+      const newUrl = `${slideshowUrl}&listingId=${listingId}&index=${index}&callingWindow=""`;
+      $.fn.colorbox({
+        href: newUrl,
+        open: true,
+        iframe: true,
+        width: 850,
+        height: height,
+        title: title,
+        close:
+          '<button id="Print">Print</button><button id="Close">Close</button>',
+        onClosed: false,
+      });
+    };
+
+    document.querySelectorAll('img[rel^=slideshow]').forEach(el => {
+      el.addEventListener('click', newSlideshowHandler);
+    });
   }
 
   function addGoogleMapsLinks() {
