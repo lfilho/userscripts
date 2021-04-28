@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Paragon real state permalink
-// @version      0.3
+// @version      0.4
 // @description  Adds a permalink to paragon's listings so we can share with realtors, spouses, etc
 // @author       Luiz Filho
 // @match        https://bcres.paragonrels.com/publink/*
@@ -15,9 +15,13 @@
 (async () => {
   await sleep(200);
 
-  if (window.self.name === 'left') {
+  const isMenu = window.self.name === 'left';
+  const isDetailPage =
+    window.self.name === 'fraDetail' || window.self === window.top;
+
+  if (isMenu) {
     addPermalinks();
-  } else if (window.self.name === 'fraDetail') {
+  } else if (isDetailPage) {
     addGoogleMapsLinks();
   }
 
